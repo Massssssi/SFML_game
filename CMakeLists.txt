@@ -9,6 +9,7 @@ add_executable(sfml_game
 	src/main.cpp
 	src/Game.cpp
 	include/Game.h
+
 	
 )
 
