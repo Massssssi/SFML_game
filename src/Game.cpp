@@ -1,9 +1,17 @@
 #include "../include/Game.h"
+#include <ctime>
 
 
 void Game::initVariables()
 {
 	this->window = nullptr;
+
+	 //game logic
+	this->points = 0;
+	this->enemySpawnTimer ;
+	this->enemySpawnTimerMax = 100.f;
+	this->enemySpawnTimer = this->enemySpawnTimerMax;
+	this->maxEnemies = 5;
 }
 
 void Game::initWindow()
@@ -79,12 +87,34 @@ void Game::updateMousePositions()
 }
 
 
+void Game::spawnEnemy()
+{
+	//spawn enemya dn set color and positon
+
+
+}
+void Game::updateEnemies() 
+{
+	if (this->enemies.size() < this->maxEnemies)
+	{
+		if (this->enemySpawnTimer >= this->enemySpawnTimerMax)
+		{
+			//spawn the enemy and reset the timer
+			this->spawnEnemy();
+			this->enemySpawnTimer = 0.f;
+		}
+		else
+		{
+			this->enemySpawnTimer += 1.f;
+		}
+	}
+}
 
 void Game::update()
 {
 	this->pollEvents();
-
 	this->updateMousePositions();
+	this->updateEnemies();
 }
 
 void Game::render()
