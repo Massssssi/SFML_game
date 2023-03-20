@@ -91,8 +91,20 @@ void Game::spawnEnemy()
 {
 	//spawn enemya dn set color and positon
 
+	this->enemy.setPosition(
+		static_cast<float> (rand() % static_cast<int>(this->window->getSize().x - this->enemy.getSize().x)),
+		0.f
+	);
 
+	this->enemy.setFillColor(sf::Color::Green);
+
+	//spawn the enemy
+	this->enemies.push_back(this->enemy);
 }
+
+
+
+
 void Game::updateEnemies() 
 {
 	if (this->enemies.size() < this->maxEnemies)
@@ -108,6 +120,12 @@ void Game::updateEnemies()
 			this->enemySpawnTimer += 1.f;
 		}
 	}
+
+	//Move the enemies
+	for (auto& e : this->enemies)
+	{
+		e.move(0.f, 5.f);
+	}
 }
 
 void Game::update()
@@ -117,6 +135,22 @@ void Game::update()
 	this->updateEnemies();
 }
 
+
+
+
+
+void Game::renderEnemies()
+{
+	for (auto& e : this->enemies)
+	{
+		this->window->draw(e);
+	}
+}
+
+
+
+
+
 void Game::render()
 {
 	//render old frame and render objects and sidplay window.
@@ -124,6 +158,7 @@ void Game::render()
 
 	this->window->clear();
 
-	this->window->draw(this->enemy);
+
+	this->renderEnemies();
 	this->window->display();
 }
