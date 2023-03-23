@@ -9,7 +9,7 @@ void Game::initVariables()
 	 //game logic
 	this->points = 0;
 	this->enemySpawnTimer ;
-	this->enemySpawnTimerMax = 100.f;
+	this->enemySpawnTimerMax = 10.f;
 	this->enemySpawnTimer = this->enemySpawnTimerMax;
 	this->maxEnemies = 5;
 }
@@ -84,6 +84,7 @@ void Game::pollEvents()
 void Game::updateMousePositions()
 {
 	this->mousePosWindow = sf::Mouse::getPosition(*this->window);
+	this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
 }
 
 
@@ -120,12 +121,33 @@ void Game::updateEnemies()
 			this->enemySpawnTimer += 1.f;
 		}
 	}
-
-	//Move the enemies
-	for (auto& e : this->enemies)
+	for (int i = 0; i < this->enemies.size(); i++)
 	{
-		e.move(0.f, 5.f);
+		this->enemies[i].move(0.f, 5.f);
+		bool deleted = false;
+
+		//check if clicked
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			if (enemies[i].getGlobalBounds().contains(this->mousePosView))
+			{
+				deleted = true;
+
+				this->points += 10;
+			}
+		}
+		if (enemies[i].getPosition().y > this->window->getSize().y)
+		{
+			deleted = true;
+		}
+
+		if (deleted)
+		{
+			this->enemies.erase(this->enemies.begin() + i);
+		}
 	}
+
+
 }
 
 void Game::update()
