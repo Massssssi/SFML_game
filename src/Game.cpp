@@ -8,10 +8,13 @@ void Game::initVariables()
 
 	 //game logic
 	this->points = 0;
+	this->health = 10;
+	this->endGame = false;
 	this->enemySpawnTimer ;
 	this->enemySpawnTimerMax = 10.f;
 	this->enemySpawnTimer = this->enemySpawnTimerMax;
 	this->maxEnemies = 5;
+	this->mouseHeld = false;
 }
 
 void Game::initWindow()
@@ -126,35 +129,55 @@ void Game::updateEnemies()
 		this->enemies[i].move(0.f, 5.f);
 		bool deleted = false;
 
-		//check if clicked
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		{
-			if (enemies[i].getGlobalBounds().contains(this->mousePosView))
-			{
-				deleted = true;
-
-				this->points += 10;
-			}
-		}
 		if (enemies[i].getPosition().y > this->window->getSize().y)
 		{
-			deleted = true;
-		}
-
-		if (deleted)
-		{
 			this->enemies.erase(this->enemies.begin() + i);
+			this->health -= 1;
+			std::cout << " health " << this->health << "\n";
 		}
 	}
 
+
+	//check if clicked
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		if (this->mouseHeld == false)
+		{
+			this->mouseHeld = true;
+			bool deleted = false;
+			for (size_t i = 0; i < this->enemies.size() && deleted == false; i++)
+			{
+				if (enemies[i].getGlobalBounds().contains(this->mousePosView))
+				{
+					deleted = true;
+					this->enemies.erase(this->enemies.begin() + i);
+					this->points += 10;
+					std::cout << " points " << this->health << "\n";
+				}
+			}
+		}
+	}
+	else
+	{
+		this->mouseHeld = false;
+	}
 
 }
 
 void Game::update()
 {
 	this->pollEvents();
-	this->updateMousePositions();
-	this->updateEnemies();
+
+	if (this -> endGame == false)
+	{
+		this->updateMousePositions();
+		this->updateEnemies();
+	}
+
+	if (this->health <= 0)
+	{
+		this->endGame = true;
+	}
 }
 
 
